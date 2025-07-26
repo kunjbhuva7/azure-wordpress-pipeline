@@ -5,52 +5,28 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-  ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-  ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
-  ARM_TENANT_ID: $(ARM_TENANT_ID)
+  - group: TerraformSecrets  # <- Your variable group name
 
 steps:
-  - task: UsePythonVersion@0
+  - task: TerraformInstaller@1
     inputs:
-      versionSpec: '3.x'
-      addToPath: true
+      terraformVersion: 'latest'
 
   - script: |
-      sudo apt-get update && sudo apt-get install -y gnupg software-properties-common curl unzip
-      curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-      sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-      sudo apt-get update && sudo apt-get install terraform -y
-      terraform version
-    displayName: 'Install Terraform'
-
-  - script: |
-      cd terraform
       terraform init
-    env:
-      ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-      ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
-      ARM_TENANT_ID: $(ARM_TENANT_ID)
     displayName: 'Terraform Init'
-
-  - script: |
-      cd terraform
-      terraform plan
     env:
       ARM_CLIENT_ID: $(ARM_CLIENT_ID)
       ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
       ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
       ARM_TENANT_ID: $(ARM_TENANT_ID)
-    displayName: 'Terraform Plan'
 
   - script: |
-      cd terraform
       terraform apply -auto-approve
+    displayName: 'Terraform Apply'
     env:
       ARM_CLIENT_ID: $(ARM_CLIENT_ID)
       ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
       ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
       ARM_TENANT_ID: $(ARM_TENANT_ID)
-    displayName: 'Terraform Apply'
 
