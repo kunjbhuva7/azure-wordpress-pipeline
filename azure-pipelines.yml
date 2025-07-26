@@ -1,0 +1,42 @@
+trigger:
+<<<<<<< HEAD
+  - main
+=======
+- main
+>>>>>>> 2c1819b (Initial commit - Terraform + Azure pipeline for WordPress)
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+<<<<<<< HEAD
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.x'
+      addToPath: true
+
+  - script: |
+      sudo apt-get update && sudo apt-get install -y gnupg software-properties-common curl unzip
+      curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+      sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+      sudo apt-get update && sudo apt-get install terraform -y
+      terraform version
+    displayName: 'Install Terraform'
+
+  - script: |
+      cd terraform
+      terraform init
+      terraform plan
+    displayName: 'Terraform Init and Plan'
+=======
+- task: TerraformInstaller@1
+  inputs:
+    terraformVersion: 'latest'
+
+- script: terraform init
+  displayName: 'Terraform Init'
+
+- script: terraform apply -auto-approve
+  displayName: 'Terraform Apply'
+>>>>>>> 2c1819b (Initial commit - Terraform + Azure pipeline for WordPress)
+
