@@ -1,15 +1,16 @@
 trigger:
-<<<<<<< HEAD
   - main
-=======
-- main
->>>>>>> 2c1819b (Initial commit - Terraform + Azure pipeline for WordPress)
 
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+  ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+  ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+  ARM_TENANT_ID: $(ARM_TENANT_ID)
+
 steps:
-<<<<<<< HEAD
   - task: UsePythonVersion@0
     inputs:
       versionSpec: '3.x'
@@ -26,17 +27,30 @@ steps:
   - script: |
       cd terraform
       terraform init
+    env:
+      ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+      ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+      ARM_TENANT_ID: $(ARM_TENANT_ID)
+    displayName: 'Terraform Init'
+
+  - script: |
+      cd terraform
       terraform plan
-    displayName: 'Terraform Init and Plan'
-=======
-- task: TerraformInstaller@1
-  inputs:
-    terraformVersion: 'latest'
+    env:
+      ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+      ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+      ARM_TENANT_ID: $(ARM_TENANT_ID)
+    displayName: 'Terraform Plan'
 
-- script: terraform init
-  displayName: 'Terraform Init'
-
-- script: terraform apply -auto-approve
-  displayName: 'Terraform Apply'
->>>>>>> 2c1819b (Initial commit - Terraform + Azure pipeline for WordPress)
+  - script: |
+      cd terraform
+      terraform apply -auto-approve
+    env:
+      ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+      ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+      ARM_TENANT_ID: $(ARM_TENANT_ID)
+    displayName: 'Terraform Apply'
 
