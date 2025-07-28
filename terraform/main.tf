@@ -8,7 +8,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "wordpress-9C"
+  name     = "wordpress-11C"
   location = "East US"
 }
 
@@ -86,7 +86,7 @@ resource "azurerm_network_interface_security_group_association" "nic_nsg" {
 }
 
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                = "wordpress-3o"
+  name                = "wordpress-4o"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   size                = "Standard_B1s"
@@ -111,8 +111,16 @@ resource "azurerm_linux_virtual_machine" "vm" {
     version   = "latest"
   }
 
-  tags = {
-    environment = "dev"
+  provisioner "file" {
+    source      = "${path.module}/install.sh"
+    destination = "/tmp/install.sh"
+
+    connection {
+      type        = "ssh"
+      user        = "azureuser"
+      private_key = file("${path.module}/keys/id_rsa")
+      host        = azurerm_public_ip.public_ip.ip_address
+    }
   }
 
   provisioner "remote-exec" {
@@ -124,9 +132,13 @@ resource "azurerm_linux_virtual_machine" "vm" {
     connection {
       type        = "ssh"
       user        = "azureuser"
-      private_key = file("keys/id_rsa") # Pipeline mein Secure File se banega
+      private_key = file("${path.module}/keys/id_rsa")
       host        = azurerm_public_ip.public_ip.ip_address
     }
+  }
+
+  tags = {
+    environment = "dev"
   }
 
   depends_on = [
@@ -134,3 +146,4 @@ resource "azurerm_linux_virtual_machine" "vm" {
     azurerm_public_ip.public_ip
   ]
 }
+
