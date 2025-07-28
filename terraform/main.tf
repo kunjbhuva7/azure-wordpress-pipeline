@@ -56,12 +56,12 @@ resource "azurerm_linux_virtual_machine" "vm" {
   location            = azurerm_resource_group.rg.location
   size                = "Standard_B1s"
   admin_username      = "azureuser"
+  admin_password      = "Password1234!"  # Only for demo purposes!
   network_interface_ids = [azurerm_network_interface.nic.id]
-  admin_password      = "Password1234!" # only for demo; use SSH in production
 
   os_disk {
-    name              = "osdisk"
-    caching           = "ReadWrite"
+    name                 = "osdisk"
+    caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
 
@@ -72,25 +72,31 @@ resource "azurerm_linux_virtual_machine" "vm" {
     version   = "latest"
   }
 
+  tags = {
+    environment = "dev"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "sudo apt update",
       "sudo apt install -y apache2 php mysql-server php-mysql wget unzip",
       "cd /var/www/html",
       "sudo rm index.html",
-      "wget https://wordpress.org/latest.zip",
-      "unzip latest.zip",
-      "mv wordpress/* .",
-      "rm -rf wordpress latest.zip",
+      "sudo wget https://wordpress.org/latest.zip",
+      "sudo unzip latest.zip",
+      "sudo mv wordpress/* .",
+      "sudo rm -rf wordpress latest.zip",
       "sudo chown -R www-data:www-data /var/www/html"
     ]
 
     connection {
       type     = "ssh"
       user     = "azureuser"
-      password = "Password1234!"
+      password = "AzurePipline!@#89"
       host     = azurerm_public_ip.public_ip.ip_address
     }
   }
+
+  depends_on = [azurerm_public_ip.public_ip]
 }
 

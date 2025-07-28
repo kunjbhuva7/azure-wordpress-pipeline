@@ -1,7 +1,9 @@
 #4C9D
 
 trigger:
-  - main
+  branches:
+    include:
+      - main
 
 pool:
   vmImage: ubuntu-latest
