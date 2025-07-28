@@ -2,40 +2,47 @@ trigger:
   - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: ubuntu-latest
 
 variables:
-  - name: ARM_SUBSCRIPTION_ID
-    value: $(subscription_id)
-  - name: ARM_CLIENT_ID
-    value: $(client_id)
-  - name: ARM_CLIENT_SECRET
-    value: $(client_secret)
-  - name: ARM_TENANT_ID
-    value: $(tenant_id)
+  - group: TerraformSecrets
 
 steps:
   - task: TerraformInstaller@1
     inputs:
-      terraformVersion: 'latest'
+      terraformVersion: '1.6.6'
 
   - script: |
       terraform init
     displayName: 'Terraform Init'
     workingDirectory: terraform
     env:
-      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
       ARM_CLIENT_ID: $(ARM_CLIENT_ID)
       ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
       ARM_TENANT_ID: $(ARM_TENANT_ID)
 
   - script: |
-      terraform apply -auto-approve
+      terraform plan -out=tfplan \
+        -var "subscription_id=$(ARM_SUBSCRIPTION_ID)" \
+        -var "client_id=$(ARM_CLIENT_ID)" \
+        -var "client_secret=$(ARM_CLIENT_SECRET)" \
+        -var "tenant_id=$(ARM_TENANT_ID)"
+    displayName: 'Terraform Plan'
+    workingDirectory: terraform
+    env:
+      ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+      ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+      ARM_TENANT_ID: $(ARM_TENANT_ID)
+
+  - script: |
+      terraform apply -auto-approve tfplan
     displayName: 'Terraform Apply'
     workingDirectory: terraform
     env:
-      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
       ARM_CLIENT_ID: $(ARM_CLIENT_ID)
       ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
       ARM_TENANT_ID: $(ARM_TENANT_ID)
 
