@@ -8,7 +8,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "wordpress-rg-4"
+  name     = "wordpress-rg-5A"
   location = "East US"
 }
 
@@ -57,7 +57,7 @@ resource "azurerm_network_security_group" "nsg" {
 }
 
 resource "azurerm_public_ip" "public_ip" {
-  name                = "wordpress-ip"
+  name                = "wordpress-Ip"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
