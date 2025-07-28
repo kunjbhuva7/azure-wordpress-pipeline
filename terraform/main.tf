@@ -8,7 +8,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "wordpress-11C"
+  name     = "wordpress-7N"
   location = "East US"
 }
 
@@ -86,7 +86,7 @@ resource "azurerm_network_interface_security_group_association" "nic_nsg" {
 }
 
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                = "wordpress-4o"
+  name                = "wordpress-8o"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   size                = "Standard_B1s"
