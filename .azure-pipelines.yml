@@ -1,5 +1,3 @@
-#4
-
 trigger:
   - main
 
@@ -17,6 +15,7 @@ steps:
   - script: |
       terraform init
     displayName: 'Terraform Init'
+    workingDirectory: terraform
     env:
       ARM_CLIENT_ID: $(ARM_CLIENT_ID)
       ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
@@ -26,6 +25,7 @@ steps:
   - script: |
       terraform apply -auto-approve
     displayName: 'Terraform Apply'
+    workingDirectory: terraform
     env:
       ARM_CLIENT_ID: $(ARM_CLIENT_ID)
       ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
