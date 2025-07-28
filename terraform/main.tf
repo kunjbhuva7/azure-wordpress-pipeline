@@ -95,7 +95,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   admin_ssh_key {
     username   = "azureuser"
-    public_key = file("keys/id_rsa.pub"
+    public_key = file("keys/id_rsa.pub")
   }
 
   os_disk {
@@ -122,10 +122,10 @@ resource "azurerm_linux_virtual_machine" "vm" {
     ]
 
     connection {
-      type     = "ssh"
-      user     = "azureuser"
-      password = file("keys/id_rsa")
-      host     = azurerm_public_ip.public_ip.ip_address
+      type        = "ssh"
+      user        = "azureuser"
+      private_key = file("keys/id_rsa") # Pipeline mein Secure File se banega
+      host        = azurerm_public_ip.public_ip.ip_address
     }
   }
 
@@ -134,4 +134,3 @@ resource "azurerm_linux_virtual_machine" "vm" {
     azurerm_public_ip.public_ip
   ]
 }
-
