@@ -8,7 +8,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "wordpress-rg"
+  name     = "wordpress-rg-1"
   location = "East US"
 }
 
@@ -56,7 +56,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   location            = azurerm_resource_group.rg.location
   size                = "Standard_B1s"
   admin_username      = "azureuser"
-  admin_password      = "Password1234!"  # Only for demo purposes!
+  admin_password      = "AzurePipline!@#89"
   network_interface_ids = [azurerm_network_interface.nic.id]
 
   os_disk {
