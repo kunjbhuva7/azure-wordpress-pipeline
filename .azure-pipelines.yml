@@ -1,5 +1,3 @@
-#e
-
 trigger:
   branches:
     include:
@@ -89,9 +87,9 @@ steps:
 
   - task: SendEmail@1
     inputs:
-      To: 'kunjbhuva301@gmail.com'
-      Subject: '✅ Terraform Pipeline Success'
-      Body: |
+      to: 'kunjbhuva301@gmail.com'
+      subject: '✅ Terraform Pipeline Success'
+      body: |
         Hello,
 
         Your Terraform pipeline ran successfully and infrastructure is deployed.
