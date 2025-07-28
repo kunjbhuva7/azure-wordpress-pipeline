@@ -61,7 +61,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   admin_ssh_key {
     username   = "azureuser"
-    public_key = file("~/.ssh/id_rsa.pub")
+    public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCqAKGb5aEX5ozMFYukLvPseLrMDbUmidA8Hn6rknFxM1zP7bdOgKeMMpRVdUdXF0C0cisZpeczIMQzDJ+aKfSLa27KFdzDuBrkei6PpL4WG98tp+E9KheCUfQSRlGPU+SHbppox6mTSpf9/iUeswkl31/74zww0UQFWiN9Gbc9EMVintuHJDSycm3h/6QIj3cCQiEtCkH+bZFmwfmIO6rZ4c8Vm596vXWS33+V/xv3ifAIq4hOI4yxQPltgaaXRcaCx5oQWRCWvk6sNEGPgxbNrVAKjf7i4lCZUxSWeURCQxMeRJlUl6aVLpMVG/swITCmqA1qY0GQHclo9gm6z7xKsWYM9uQXT7dJNRi9t+/A1joRYZkIxqKw/U2AhPstMCpiID94yX+cZOokAzCvJFhWUuYSoquiv8uALp4qmaZ2xSp9IstJIRlM4QwyTHwqfecvFkwRzRbGLR936m1BA69E63Wb963aUHGobUDIVGrvURDMzYd+cTiMkxPRCR1UyuGCGNADe5zl6veB785YDuNLZ53mSXAGtrj5QZYFGqZRCVw1fYWrB3Jhm8WG/co4CObZ94e9R8TR/fU+r0S1ZVCVNa9QTndbs/tQYraSRix7HMv7grBP3d7rKk4V4jmsy9N+dFOSZeTl9weZzpEiOripApOqTxAyinWQi52IaSqqIQ== kunjbhuva@kunjs-MacBook-Air.local"
   }
 
   os_disk {
