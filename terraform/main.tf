@@ -8,7 +8,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "wordpress-rg-2"
+  name     = "wordpress-rg-3"
   location = "East US"
 }
 
@@ -91,7 +91,6 @@ resource "azurerm_linux_virtual_machine" "vm" {
   location            = azurerm_resource_group.rg.location
   size                = "Standard_B1s"
   admin_username      = "azureuser"
-  admin_password      = "AzurePipline!@#89"
   network_interface_ids = [azurerm_network_interface.nic.id]
 
   admin_ssh_key {
@@ -132,7 +131,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
     connection {
       type     = "ssh"
       user     = "azureuser"
-      password = "AzurePipline!@#89"
+      password = file("~/.ssh/id_rsa")
       host     = azurerm_public_ip.public_ip.ip_address
     }
   }
