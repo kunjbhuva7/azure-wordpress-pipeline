@@ -8,7 +8,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "wordpress-rg-9o"
+  name     = "wordpress-1B"
   location = "East US"
 }
 
@@ -86,7 +86,7 @@ resource "azurerm_network_interface_security_group_association" "nic_nsg" {
 }
 
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                = "wordpress-7o"
+  name                = "wordpress-3o"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   size                = "Standard_B1s"
@@ -117,15 +117,8 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo apt update",
-      "sudo apt install -y apache2 php mysql-server php-mysql wget unzip",
-      "cd /var/www/html",
-      "sudo rm index.html",
-      "sudo wget https://wordpress.org/latest.zip",
-      "sudo unzip latest.zip",
-      "sudo mv wordpress/* .",
-      "sudo rm -rf wordpress latest.zip",
-      "sudo chown -R www-data:www-data /var/www/html"
+      "chmod +x /tmp/install.sh",
+      "sudo bash /tmp/install.sh"
     ]
 
     connection {
