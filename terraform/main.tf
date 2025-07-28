@@ -8,7 +8,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "wordpress-1C"
+  name     = "wordpress-9C"
   location = "East US"
 }
 
@@ -95,7 +95,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   admin_ssh_key {
     username   = "azureuser"
-    public_key = file("/Users/kunjbhuva/.ssh/id_rsa.pub")
+    public_key = file("keys/id_rsa.pub"
   }
 
   os_disk {
@@ -124,7 +124,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
     connection {
       type     = "ssh"
       user     = "azureuser"
-      password = file("/Users/kunjbhuva/.ssh/id_rsa")
+      password = file("keys/id_rsa")
       host     = azurerm_public_ip.public_ip.ip_address
     }
   }

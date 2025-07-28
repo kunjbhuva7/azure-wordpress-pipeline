@@ -1,11 +1,9 @@
-#4c
-
 trigger:
   branches:
     include:
       - main
 
-pr: none  
+pr: none
 
 pool:
   vmImage: ubuntu-latest
@@ -17,46 +15,74 @@ steps:
   - task: TerraformInstaller@1
     inputs:
       terraformVersion: '1.6.6'
+    displayName: 'Install Terraform'
 
-  - script: |
-      echo "Initializing Terraform..."
-      terraform init
+  - task: DownloadSecureFile@1
+    name: sshPrivateKey
+    inputs:
+      secureFile: 'id_rsa' # Azure DevOps Library mein Secure File ka naam
+    displayName: 'Download SSH private key'
+
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        mkdir -p terraform/keys
+        cp $(sshPrivateKey.secureFilePath) terraform/keys/id_rsa
+        chmod 600 terraform/keys/id_rsa
+    displayName: 'Copy private key to keys folder'
+
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        echo "Initializing Terraform..."
+        terraform init
+      workingDirectory: terraform
+      env:
+        ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+        ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+        ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+        ARM_TENANT_ID: $(ARM_TENANT_ID)
     displayName: 'Terraform Init'
-    workingDirectory: terraform
-    env:
-      ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-      ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
-      ARM_TENANT_ID: $(ARM_TENANT_ID)
 
-  - script: |
-      echo "Running Terraform Plan..."
-      terraform plan -out=tfplan \
-        -var "subscription_id=$(ARM_SUBSCRIPTION_ID)" \
-        -var "client_id=$(ARM_CLIENT_ID)" \
-        -var "client_secret=$(ARM_CLIENT_SECRET)" \
-        -var "tenant_id=$(ARM_TENANT_ID)"
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        echo "Running Terraform Plan..."
+        terraform plan -out=tfplan \
+          -var "subscription_id=$(ARM_SUBSCRIPTION_ID)" \
+          -var "client_id=$(ARM_CLIENT_ID)" \
+          -var "client_secret=$(ARM_CLIENT_SECRET)" \
+          -var "tenant_id=$(ARM_TENANT_ID)"
+      workingDirectory: terraform
+      env:
+        ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+        ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+        ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+        ARM_TENANT_ID: $(ARM_TENANT_ID)
     displayName: 'Terraform Plan'
-    workingDirectory: terraform
-    env:
-      ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-      ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
-      ARM_TENANT_ID: $(ARM_TENANT_ID)
 
-  - script: |
-      echo "Applying Terraform Plan..."
-      terraform apply -auto-approve tfplan
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        echo "Applying Terraform Plan..."
+        terraform apply -auto-approve tfplan
+      workingDirectory: terraform
+      env:
+        ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+        ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+        ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+        ARM_TENANT_ID: $(ARM_TENANT_ID)
     displayName: 'Terraform Apply'
-    workingDirectory: terraform
-    env:
-      ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-      ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
-      ARM_TENANT_ID: $(ARM_TENANT_ID)
 
-  - script: |
-      echo "✅ Terraform Deployment Successful!"
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        echo "✅ Terraform Deployment Successful!"
     displayName: 'Success Message'
 
   - task: SendEmail@1
@@ -70,4 +96,4 @@ steps:
 
         Regards,
         Azure DevOps Pipeline
-
+    displayName: 'Send Success Email'
