@@ -1,32 +1,38 @@
 trigger:
-  - main
+- main
 
 pool:
   vmImage: ubuntu-latest
 
 variables:
-  - group: TerraformSecrets  # <- Your variable group name
+  TF_IN_AUTOMATION: true
 
-steps:
-  - task: TerraformInstaller@1
-    inputs:
-      terraformVersion: 'latest'
+stages:
+- stage: Terraform
+  jobs:
+  - job: TerraformJob
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.x'
+        addToPath: true
 
-  - script: |
-      terraform init
-    displayName: 'Terraform Init'
-    env:
-      ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-      ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
-      ARM_TENANT_ID: $(ARM_TENANT_ID)
+    - task: TerraformInstaller@0
+      inputs:
+        terraformVersion: 'latest'
 
-  - script: |
-      terraform apply -auto-approve
-    displayName: 'Terraform Apply'
-    env:
-      ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-      ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
-      ARM_TENANT_ID: $(ARM_TENANT_ID)
+    - script: |
+        cd terraform
+        terraform init
+      displayName: 'Terraform Init'
+
+    - script: |
+        cd terraform
+        terraform plan -out=tfplan
+      displayName: 'Terraform Plan'
+
+    - script: |
+        cd terraform
+        terraform apply -auto-approve tfplan
+      displayName: 'Terraform Apply'
 
