@@ -1,9 +1,9 @@
-#4C9D
-
 trigger:
   branches:
     include:
       - main
+
+pr: none  # Disable PR-based pipeline runs
 
 pool:
   vmImage: ubuntu-latest
@@ -17,6 +17,7 @@ steps:
       terraformVersion: '1.6.6'
 
   - script: |
+      echo "Initializing Terraform..."
       terraform init
     displayName: 'Terraform Init'
     workingDirectory: terraform
@@ -27,6 +28,7 @@ steps:
       ARM_TENANT_ID: $(ARM_TENANT_ID)
 
   - script: |
+      echo "Running Terraform Plan..."
       terraform plan -out=tfplan \
         -var "subscription_id=$(ARM_SUBSCRIPTION_ID)" \
         -var "client_id=$(ARM_CLIENT_ID)" \
@@ -41,6 +43,7 @@ steps:
       ARM_TENANT_ID: $(ARM_TENANT_ID)
 
   - script: |
+      echo "Applying Terraform Plan..."
       terraform apply -auto-approve tfplan
     displayName: 'Terraform Apply'
     workingDirectory: terraform
@@ -49,4 +52,20 @@ steps:
       ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
       ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
       ARM_TENANT_ID: $(ARM_TENANT_ID)
+
+  - script: |
+      echo "✅ Terraform Deployment Successful!"
+    displayName: 'Success Message'
+
+  - task: SendEmail@1
+    inputs:
+      To: 'kunjbhuva301@gmail.com'
+      Subject: '✅ Terraform Pipeline Success'
+      Body: |
+        Hello,
+
+        Your Terraform pipeline ran successfully and infrastructure is deployed.
+
+        Regards,
+        Azure DevOps Pipeline
 
