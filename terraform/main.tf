@@ -131,7 +131,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
     connection {
       type     = "ssh"
       user     = "azureuser"
-      password = file("/Users/kunjbhuva/.ssh/id_rsa")
+      password = file("${path.module}/id_rsa")
       host     = azurerm_public_ip.public_ip.ip_address
     }
   }
