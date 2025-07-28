@@ -8,7 +8,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "wordpress-rg-3"
+  name     = "wordpress-rg-4"
   location = "East US"
 }
 
