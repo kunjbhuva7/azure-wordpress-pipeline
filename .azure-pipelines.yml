@@ -2,10 +2,17 @@ trigger:
   - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
 variables:
-  - group: TerraformSecrets
+  - name: ARM_SUBSCRIPTION_ID
+    value: $(subscription_id)
+  - name: ARM_CLIENT_ID
+    value: $(client_id)
+  - name: ARM_CLIENT_SECRET
+    value: $(client_secret)
+  - name: ARM_TENANT_ID
+    value: $(tenant_id)
 
 steps:
   - task: TerraformInstaller@1
@@ -17,9 +24,9 @@ steps:
     displayName: 'Terraform Init'
     workingDirectory: terraform
     env:
+      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
       ARM_CLIENT_ID: $(ARM_CLIENT_ID)
       ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
       ARM_TENANT_ID: $(ARM_TENANT_ID)
 
   - script: |
@@ -27,8 +34,8 @@ steps:
     displayName: 'Terraform Apply'
     workingDirectory: terraform
     env:
+      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
       ARM_CLIENT_ID: $(ARM_CLIENT_ID)
       ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-      ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
       ARM_TENANT_ID: $(ARM_TENANT_ID)
 
