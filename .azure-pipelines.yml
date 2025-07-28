@@ -20,7 +20,7 @@ steps:
   - task: DownloadSecureFile@1
     name: sshPrivateKey
     inputs:
-      secureFile: 'id_rsa' # Azure DevOps Library mein Secure File ka naam
+      secureFile: 'id_rsa'
     displayName: 'Download SSH private key'
 
   - task: Bash@3
