@@ -84,34 +84,3 @@ steps:
       script: |
         echo "✅ Terraform Deployment Successful!"
     displayName: 'Success Message'
-
-  # ✅ Cross-platform Email using Python
-  - task: Bash@3
-    displayName: 'Send Success Email'
-    inputs:
-      targetType: 'inline'
-      script: |
-        echo "Sending email using Python..."
-        python3 - <<EOF
-import smtplib
-from email.mime.text import MIMEText
-
-sender = "kunjbhuva301@gmail.com"
-receiver = "kunjbhuva301@gmail.com"
-app_password = "$(SMTP_PASSWORD)"  # Secret variable
-
-message = MIMEText("✅ Your Terraform pipeline ran successfully and infrastructure is deployed.\n\nRegards,\nAzure DevOps Pipeline")
-message['Subject'] = "Terraform Pipeline ✅ Success"
-message['From'] = sender
-message['To'] = receiver
-
-try:
-    server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-    server.login(sender, app_password)
-    server.sendmail(sender, receiver, message.as_string())
-    server.quit()
-    print("✅ Email sent successfully!")
-except Exception as e:
-    print("❌ Failed to send email:", e)
-EOF
-
